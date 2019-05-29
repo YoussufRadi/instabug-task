@@ -10,7 +10,7 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
-# require "sprockets/railtie"
+require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -21,7 +21,11 @@ module InstabugTask
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
-
+    config.log_level = :debug
+    config.log_tags  = [:subdomain, :uuid]
+    config.logger    = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+    config.cache_store = :redis_store, ENV['CACHE_URL'],
+                         { namespace: 'drkiq::cache' }
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

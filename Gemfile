@@ -10,7 +10,10 @@ gem 'redis-namespace'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 gem 'sidekiq-unique-jobs'
- gem 'sinatra', require: false 
+gem 'sinatra', require: false 
+# gem 'raindrops'
+# gem 'unicorn', '~> 4.9'
+gem 'pg', '~> 0.18.3'
 gem 'jwt'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
@@ -51,4 +54,4 @@ end
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data'

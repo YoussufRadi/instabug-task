@@ -2,7 +2,7 @@
 
 class MessageUpdateWorker
   include Sidekiq::Worker
-  sidekiq_options queue: :message_create
+  sidekiq_options queue: :message_update
 
   def perform(id, body)
     @message = Message.find(id)
