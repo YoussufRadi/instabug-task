@@ -1,20 +1,22 @@
 version: '3.3'
 
 services:
-  # db:
-  #   image: postgres:11-alpine
-  #   restart: always
-  #   environment:
-  #     POSTGRES_PASSWORD: $DB_PASSWORD
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
 
   redis:
     image: redis
     ports:
       - "6379:6379"
+
+  db:
+    image: mysql:5.7
+    # command: mysql -h localhost -P 3306 --protocol=tcp -u root
+    volumes:
+      - ./db/data:/var/lib/mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
 
   www:
     build:
@@ -23,10 +25,13 @@ services:
     command: ["bin/rails", "server", "-b", "0.0.0.0"]
     depends_on:
       - redis
+      - db
     ports:
       - "3000:3000"
     links:
       - redis
+      - db
+
 
   sidekiq:
     build:
@@ -37,3 +42,6 @@ services:
       - redis
     links:
       - redis
+
+volumes:
+  db-data:
