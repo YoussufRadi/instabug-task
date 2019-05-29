@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
+
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
 gem 'mysql2'
 gem 'unicorn', require: true
 gem "active_model_serializers", require: true
