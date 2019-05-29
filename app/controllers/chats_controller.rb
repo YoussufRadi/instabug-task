@@ -4,7 +4,7 @@ class ChatsController < ApplicationController
 
   # GET /chats
   def index
-    @chats = Chat.find_by(user: @current_user)
+    @chats = Chat.where(user: @current_user).all
     render json: @chats
   end
 
@@ -15,22 +15,31 @@ class ChatsController < ApplicationController
 
   # POST /chats
   def create
-    @chat = @current_user.chats.create()
-    if @current_user.save
-      render json: @chat, status: :created, location: @chat
-    else
-      render json: @chat.errors, status: :unprocessable_entity
+    @ins = chat_params
+    ChatCreateWorker.perform_async(@current_user.id,  @ins[:chat_number])
+    if(@ins[:chat_number] %10 == 0)
+      ChatsCounterWorker.perform_async(@current_user.id,  @ins[:chat_number])
     end
+    # @chat = @current_user.chats.create(@ins)
+    # if @chat.save
+    # else
+    #   render json: @chat.errors, status: :unprocessable_entity
+    # end
+    render json: {
+                  "user_id": @current_user.id,
+                  "messages_count": 0,
+                  "chat_number": @ins[:chat_number],
+                  }, status: :created, location: @chat
   end
 
   # PATCH/PUT /chats/1
-  def update
-    if @chat.update(:user_id => @current_user.id)
-      render json: @chat
-    else
-      render json: @chat.errors, status: :unprocessable_entity
-    end
-  end
+  # def update
+  #   if @chat.update(:user_id => @current_user.id)
+  #     render json: @chat
+  #   else
+  #     render json: @chat.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # DELETE /chats/1
   def destroy
@@ -40,16 +49,15 @@ class ChatsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_chat
-      @chat = Chat.find_by(id: params[:id], user: @current_user)
+      @chat = Chat.find_by(chat_number: params[:id], user: @current_user)
       if !@chat
         render json: { errors: 'Chat not found' }, status: :not_found
       end
     end
 
     # Only allow a trusted parameter "white list" through.
-    # def chat_params
-    #   puts @current_user.id
-    #   params[:user_id] = @current_user.id
-    #   puts params
-    # end
+    def chat_params
+      @chat_number = Slug.inc("user_id"+@current_user.id.to_s)
+      params.permit().merge(chat_number: @chat_number)
+    end
 end

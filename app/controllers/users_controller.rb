@@ -16,8 +16,9 @@ class UsersController < ApplicationController
   # POST /users
   def create
     @user = User.new(user_params)
-
-    if @user.save
+    if !params[:name].present?
+      render json: {"error": "Name cannot be empty"}, status: :unprocessable_entity
+    elsif @user.save
       render json: @user, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity

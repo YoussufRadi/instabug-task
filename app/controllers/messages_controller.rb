@@ -5,7 +5,7 @@ class MessagesController < ApplicationController
 
   # GET /messages
   def index
-    @messages = Message.find_by(chat: @chat)
+    @messages = Message.where(chat: @chat).all
     if !@chat
       render json: { errors: 'Chat not found' }, status: :not_found
     else
@@ -20,23 +20,46 @@ class MessagesController < ApplicationController
 
   # POST /messages
   def create
-    puts params
-    puts message_params
-    @message = @chat.messages.create(message_params)
-    if @message.save
-      render json: @message, status: :created
-    else
-      render json: @message.errors, status: :unprocessable_entity
+    # @message = @chat.messages.create(message_params_create)
+    if(@ins[:message_number] %10 == 0)
+      MessagesCounterWorker.perform_async(@chat.id,  @ins[:message_number])
     end
+    @ins = message_params_create
+    if !params[:body].present?
+      render json: {"error": "Body cannot be empty"}, status: :unprocessable_entity
+    else
+      MessageCreateWorker.perform_async(@chat.id,  @ins[:message_number], @ins[:body])
+      render json: {
+                "body": @ins[:body],
+                "message_number": @ins[:message_number],
+                "chat_number": @chat.chat_number,
+                }, status: :created
+      end
+    # if @message.save
+    #   render json: @message, status: :created
+    # else
+    #   render json: @message.errors, status: :unprocessable_entity
+    # end
   end
 
   # PATCH/PUT /messages/1
   def update
-    if @message.update(message_params)
-      render json: @message
+    @ins = message_params_update
+    if !params[:body].present?
+      render json: {"error": "Body cannot be empty"}, status: :unprocessable_entity
     else
-      render json: @message.errors, status: :unprocessable_entity
+      MessageUpdateWorker.perform_async(@message.id, @ins[:body])
+      render json: {
+                "body": @ins[:body],
+                "message_number": @message.message_number,
+                "chat_number": @chat.chat_number,
+                }
     end
+    # if @message.update(message_params_update)
+    #   render json: @message
+    # else
+    #   render json: @message.errors, status: :unprocessable_entity
+    # end
   end
 
   # DELETE /messages/1
@@ -47,23 +70,28 @@ class MessagesController < ApplicationController
   private
 
     def set_chat
-      @chat = Chat.find_by(id: params[:chat_id], user: @current_user)
+      @chat = Chat.find_by(chat_number: params[:chat_id], user: @current_user)
+      if !@chat
+        render json: { errors: 'Chat not found' }, status: :not_found
+      end
     end
 
     # Use callbacks to share common setup or constraints between actions.
     def set_message
-      if !@chat
-        render json: { errors: 'Chat not found' }, status: :not_found
-      end
+      @message = Message.find_by(message_number: params[:id], chat: @chat)
       if !@message
         render json: { errors: 'Message not found' }, status: :not_found
       end
-      @message = Message.find_by(id: params[:id], chat: @chat)
-      @message = Message.find(params[:id])
+      # @message = Message.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
-    def message_params
+    def message_params_create
+      @message_number = Slug.inc("chat_id"+@chat.id.to_s)
+      params.permit(:body).merge(message_number: @message_number)
+    end
+
+    def message_params_update
       params.permit(:body)
     end
 end
