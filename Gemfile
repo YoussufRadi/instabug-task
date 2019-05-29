@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
-
+gem 'mysql2'
 gem 'unicorn', require: true
 gem "active_model_serializers", require: true
 gem 'rack'
