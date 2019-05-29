@@ -1,33 +1,39 @@
 version: '3.3'
 
-# To access data postgres writes within container from host machine
-volumes:
-  postgres_data: {}
-
 services:
-  db:
-    image: postgres:11-alpine
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  # db:
+  #   image: postgres:11-alpine
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: $DB_PASSWORD
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
 
   redis:
-    image: redis:alpine
+    image: redis
     ports:
       - "6379:6379"
 
-  app:
-    build: .
-    environment:
-      POSTGRES_PASSWORD: postgres
-      RAILS_ENV: production
+  www:
+    build:
+      context: .
+      dockerfile: ./DockerFile2
+    command: ["bin/rails", "server", "-b", "0.0.0.0"]
     depends_on:
-      - db
       - redis
-    # env_file: .docker/.env
     ports:
       - "3000:3000"
+    links:
+      - redis
+
+  sidekiq:
+    build:
+      context: .
+      dockerfile: ./DockerFile2
+    command: ["bundle", "exec", "sidekiq", "-q", "chat_create", "-q", "message_create", "-q", "default"]
+    depends_on:
+      - redis
+    links:
+      - redis

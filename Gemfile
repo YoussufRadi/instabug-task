@@ -3,10 +3,13 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'unicorn', require: true
+gem "active_model_serializers", require: true
 gem 'rack'
 gem 'rack-protection', require: false
 gem 'redis'
 gem 'redis-namespace'
+gem 'redis-rails', '~> 5'
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
 gem 'sidekiq-unique-jobs'

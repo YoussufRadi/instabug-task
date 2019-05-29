@@ -30,13 +30,13 @@ RUN if [[ "$RAILS_ENV" == "production" ]]; then\
 
 # Remove build dependencies and install runtime dependencies
 RUN apk del build-dependency
-# RUN apk add --update mariadb-client-libs postgresql-client postgresql-libs sqlite-libs nodejs tzdata
+RUN apk add --update postgresql-client postgresql-libs sqlite-libs nodejs tzdata
 
 # Adding project files
 COPY . .
 
-# RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 EXPOSE 3000
 
-CMD ["rails", "s"]
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

@@ -1,6 +1,8 @@
 require_relative 'boot'
+# Bundler.require(*Rails.groups)
 
 require "rails"
+# require "rails/all"
 # Pick the frameworks you want:
 require "active_model/railtie"
 require "active_job/railtie"
@@ -24,8 +26,8 @@ module InstabugTask
     config.log_level = :debug
     config.log_tags  = [:subdomain, :uuid]
     config.logger    = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
-    config.cache_store = :redis_store, ENV['CACHE_URL'],
-                         { namespace: 'drkiq::cache' }
+    # config.cache_store = :redis_store, ENV['CACHE_URL'],
+    #                      { namespace: 'drkiq::cache' }
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

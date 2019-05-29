@@ -21,10 +21,10 @@ class MessagesController < ApplicationController
   # POST /messages
   def create
     # @message = @chat.messages.create(message_params_create)
+    @ins = message_params_create
     if(@ins[:message_number] %10 == 0)
       MessagesCounterWorker.perform_async(@chat.id,  @ins[:message_number])
     end
-    @ins = message_params_create
     if !params[:body].present?
       render json: {"error": "Body cannot be empty"}, status: :unprocessable_entity
     else
