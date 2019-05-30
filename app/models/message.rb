@@ -7,4 +7,4 @@ class Message < ApplicationRecord
   belongs_to :chat
 end
 
-Message.import
+Message.import(force: true)
