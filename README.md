@@ -1,13 +1,51 @@
-# README
+# Instabug-task
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+This is a task done according to specifications sent by instabug using Ruby on Rails V5, Redis, Sidekiq, MySQL and ElasticSearch.
 
 - Ruby version : 2.6.3
 
-The available API routes are:
+## To Run the application follow these steps
+
+- First make sure you have Docker installed
+- Second clone the project any where to your pc
+
+```bash
+git clone https://github.com/YoussufRadi/instabug-task.git
+```
+
+- Then cd to the directory
+
+```bash
+cd instabug-task
+```
+
+- Run docker to build the compose file
+
+```bash
+docker-compose build
+```
+
+- Use docker to create the database
+
+```bash
+docker-compose run www rake db:create
+```
+
+- Run docker again to migrate the database
+
+```bash
+docker-compose run www rake db:migrate
+```
+
+- Finally start the compose file
+
+```bash
+docker-compose up
+```
+
+This should run the whole orchestrated technologies to launch an API end point on localhost:3000
+
+## The available API routes are:
 
 - GET /users/ Return user's info, requires a token in "Authorization" as Headed
 - POST /users/ Creates a new user, requires a body with JSON {"name":"string"}
