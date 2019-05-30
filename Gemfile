@@ -6,6 +6,7 @@ ruby '2.6.3'
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
 gem 'elasticsearch-persistence'
+gem "sidekiq-cron"
 gem 'mysql2'
 gem 'unicorn', require: true
 gem "active_model_serializers", require: true
