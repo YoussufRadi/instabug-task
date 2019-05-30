@@ -58,6 +58,7 @@ This should run the whole orchestrated technologies to launch an API end point o
 - POST /chats/ Creates a new chat with a number, requires a token in "Authorization" as Headed
 - DELETE /chats/:chat_number Deletes chat with a number, requires a token in "Authorization" as Headed
 
+- GET /chats/:chat_id/messages/search?body="SEARCH PARAM" Search through chat's messages and returns the one that matches the SEARCH PARAM
 - GET /chats/:chat_number/messages/ Return chat's messages, requires a token in "Authorization" as Headed
 - GET /chats/:chat_number/messages/:message_number Return user's specific message with a number, requires a token in "Authorization" as Headed
 - POST /chats/:chat_number/messages/ Creates a new chat' message with a number, requires a body with JSON {"body":"string"}, requires a token in "Authorization" as Headed
