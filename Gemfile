@@ -3,6 +3,25 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.3'
 
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'elasticsearch-persistence'
+gem 'mysql2'
+gem 'unicorn', require: true
+gem "active_model_serializers", require: true
+gem 'rack'
+gem 'rack-protection', require: false
+gem 'redis'
+gem 'redis-namespace'
+gem 'redis-rails', '~> 5'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+gem 'sidekiq-unique-jobs'
+gem 'sinatra', require: false 
+# gem 'raindrops'
+# gem 'unicorn', '~> 4.9'
+gem 'pg', '~> 0.18.3'
+gem 'jwt'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.3'
 # Use sqlite3 as the database for Active Record
@@ -42,4 +61,4 @@ end
 
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data'

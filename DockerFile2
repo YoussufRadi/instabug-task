@@ -1,0 +1,19 @@
+# Using alpine image for small size
+FROM ruby:2.6.3-alpine3.9
+
+# Use virtual build-dependencies tag so we can remove these packages after bundle install
+RUN apk update && apk add --update --no-cache --virtual build-dependency build-base ruby-dev mysql-dev postgresql-dev git sqlite-dev
+RUN apk add --update postgresql-client postgresql-libs sqlite-libs nodejs tzdata
+
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY Gemfile Gemfile.lock ./
+RUN gem install bundler && bundle install --jobs 20 --retry 5
+
+COPY . ./
+
+
+EXPOSE 3000
+
+# CMD ["bin/rails", "server", "-b", "0.0.0.0"]

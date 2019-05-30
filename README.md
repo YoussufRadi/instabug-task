@@ -1,24 +1,65 @@
-# README
+# Instabug-task
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a task done according to specifications sent by instabug using Ruby on Rails V5, Redis, Sidekiq, MySQL and ElasticSearch.
 
-Things you may want to cover:
+- Ruby version : 2.6.3
 
-- Ruby version
+## To Run the application follow these steps
 
-- System dependencies
+- First make sure you have Docker installed
+- Second clone the project any where to your pc
 
-- Configuration
+```bash
+git clone https://github.com/YoussufRadi/instabug-task.git
+```
 
-- Database creation
+- Then cd to the directory
 
-- Database initialization
+```bash
+cd instabug-task
+```
 
-- How to run the test suite
+- Run docker to build the compose file
 
-- Services (job queues, cache servers, search engines, etc.)
+```bash
+docker-compose build
+```
 
-- Deployment instructions
+- Use docker to create the database
 
-- ...
+```bash
+docker-compose run www rake db:create
+```
+
+- Run docker again to migrate the database
+
+```bash
+docker-compose run www rake db:migrate
+```
+
+- Finally start the compose file
+
+```bash
+docker-compose up
+```
+
+This should run the whole orchestrated technologies to launch an API end point on localhost:3000
+
+## The available API routes are:
+
+- GET /users/ Return user's info, requires a token in "Authorization" as Headed
+- POST /users/ Creates a new user, requires a body with JSON {"name":"string"}
+- PATCH /users/:id Modifies user's info, requires a body with JSON {"name":"string"}, requires a token in "Authorization" as Headed
+- Delete /users/:id Modifies user's info, requires a token in "Authorization" as Headed
+- POST /auth/login/ Return user's token, requires a body with JSON {"name":"string"}
+
+- GET /chats/ Return user's chats, requires a token in "Authorization" as Headed
+- GET /chats/:chat_number Return user's specific chat with a number, requires a token in "Authorization" as Headed
+- POST /chats/ Creates a new chat with a number, requires a token in "Authorization" as Headed
+- DELETE /chats/:chat_number Deletes chat with a number, requires a token in "Authorization" as Headed
+
+- GET /chats/:chat_number/messages/ Return chat's messages, requires a token in "Authorization" as Headed
+- GET /chats/:chat_number/messages/:message_number Return user's specific message with a number, requires a token in "Authorization" as Headed
+- POST /chats/:chat_number/messages/ Creates a new chat' message with a number, requires a body with JSON {"body":"string"}, requires a token in "Authorization" as Headed
+- DELETE /chats/:chat_number/messages/:message_number Deletes a message with a number, requires a token in "Authorization" as Headed
+- PATCH /chats/:chat_number/messages/:message_number Modifies a message with a number, requires a body with JSON {"body":"string"}, requires a token in "Authorization" as Headed
