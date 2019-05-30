@@ -2,7 +2,10 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
   require 'sidekiq-scheduler/web'
+  require 'sidekiq/cron/web'
+  
   mount Sidekiq::Web => '/sidekiq'
+  get '/chats/:chat_id/messages/search', to: 'search#search'
   
   resources :users
   resources :chats do
@@ -12,7 +15,6 @@ Rails.application.routes.draw do
   patch '/users', to: 'users#update'
   
   post '/auth/login', to: 'authentication#login'
-  get '/search/messages', to: 'search#search'
   get '/*a', to: 'application#not_found'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

@@ -17,9 +17,6 @@ class ChatsController < ApplicationController
   def create
     @ins = chat_params
     ChatCreateWorker.perform_async(@current_user.id,  @ins[:chat_number])
-    if(@ins[:chat_number] %10 == 0)
-      ChatsCounterWorker.perform_async(@current_user.id,  @ins[:chat_number])
-    end
     # @chat = @current_user.chats.create(@ins)
     # if @chat.save
     # else
